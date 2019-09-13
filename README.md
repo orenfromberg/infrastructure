@@ -8,11 +8,12 @@ To use it, get your ip address and apply the following terraform:
 
 ```terraform
 module "my-instance" {
-  source = "git@github.com:orenfromberg/infrastructure.git//dev-machine?ref=master"
+  source = "git@github.com:orenfromberg/infrastructure.git//dev-machine?ref=tags/v0.0.1"
   my-ip = "71.104.71.56"
   name  = "my-dev-machine"
 }
 ```
+Make sure you are using the desired tagged release.
 
 Once it is complete, you'll have an identity file `identity.pem` (and `ip_address.txt`) in your local directory.
 
