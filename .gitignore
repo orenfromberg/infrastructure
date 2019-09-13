@@ -30,6 +30,3 @@ override.tf.json
 
 # private keys
 *.pem
-
-ignored/
-ip_address.txt
