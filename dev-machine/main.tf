@@ -1,9 +1,9 @@
-resource "tls_private_key" "example" {
+resource "tls_private_key" "private_key" {
   algorithm = "RSA"
   rsa_bits  = 4096
 
   provisioner "local-exec" {
-    command = "echo \"${tls_private_key.example.private_key_pem}\" > identity.pem; chmod 400 identity.pem"
+    command = "echo \"${tls_private_key.private_key.private_key_pem}\" > identity.pem; chmod 400 identity.pem"
   }
 }
 
@@ -44,7 +44,7 @@ data "aws_ami" "amazon-linux" {
 }
 
 resource "aws_key_pair" "my-key-pair" {
-  public_key = "${tls_private_key.example.public_key_openssh}"
+  public_key = "${tls_private_key.private_key.public_key_openssh}"
 }
 
 resource "aws_security_group" "security_grp" {
