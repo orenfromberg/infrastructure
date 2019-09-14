@@ -58,10 +58,10 @@ resource "aws_security_group" "security_grp" {
     cidr_blocks = ["${var.my-ip}/32"]
   }
 
-  # web development
+  # allow all user ports for dev
   ingress {
-    from_port   = 3000
-    to_port     = 3000
+    from_port   = 1025
+    to_port     = 65535
     protocol    = "tcp"
     self        = true
     cidr_blocks = ["0.0.0.0/0"]
