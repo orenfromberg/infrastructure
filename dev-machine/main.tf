@@ -34,7 +34,7 @@ data "aws_ami" "amazon-linux" {
 
   filter {
     name   = "virtualization-type"
-    values = ["hvm"]               # hvm > pv
+    values = ["hvm"] # hvm > pv
   }
 
   filter {
@@ -44,7 +44,7 @@ data "aws_ami" "amazon-linux" {
 }
 
 resource "aws_key_pair" "my-key-pair" {
-  public_key = "${tls_private_key.private_key.public_key_openssh}"
+  public_key = tls_private_key.private_key.public_key_openssh
 }
 
 resource "aws_security_group" "security_grp" {
@@ -77,14 +77,14 @@ resource "aws_security_group" "security_grp" {
 
 resource "aws_instance" "dev-machine" {
   #ami           = "${data.aws_ami.amazon-linux.id}"
-  ami           = "${data.aws_ami.latest-ubuntu.id}"
+  ami           = data.aws_ami.latest-ubuntu.id
   instance_type = "t2.micro"
 
-  key_name = "${aws_key_pair.my-key-pair.key_name}"
+  key_name = aws_key_pair.my-key-pair.key_name
 
   associate_public_ip_address = true
 
-  security_groups = ["${aws_security_group.security_grp.name}"]
+  security_groups = [aws_security_group.security_grp.name]
 
   user_data = <<EOF
 #!/bin/bash
@@ -99,11 +99,13 @@ sudo usermod -aG docker ubuntu
 curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.34.0/install.sh | sudo bash
 EOF
 
+
   provisioner "local-exec" {
     command = "echo \"${aws_instance.dev-machine.public_ip}\" > ip_address.txt"
   }
 
-  tags {
-    Name = "${var.name}"
+  tags = {
+    Name = var.name
   }
 }
+
