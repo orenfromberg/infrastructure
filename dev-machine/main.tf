@@ -3,7 +3,7 @@ resource "tls_private_key" "dev_machine" {
   rsa_bits  = 4096
 
   provisioner "local-exec" {
-    command = "echo \"${tls_private_key.dev_machine.private_key_pem}\" > ${var.name}.pem; chmod 400 identity.pem"
+    command = "echo \"${tls_private_key.dev_machine.private_key_pem}\" > ${var.name}-identity.pem; chmod 400 ${var.name}-identity.pem"
   }
 }
 
@@ -76,6 +76,11 @@ EOF
 
   provisioner "local-exec" {
     command = "echo \"${aws_instance.dev_machine.public_ip}\" > ip_address.txt"
+  }
+
+  provisioner "file" {
+    content = templatefile("${path.module}/connect.sh.tmpl", { identity = "${var.name}-identity.pem", public_ip = "${aws_instance.dev_machine.public_ip}"})
+    destination = "connect.sh"
   }
 
   tags = {
