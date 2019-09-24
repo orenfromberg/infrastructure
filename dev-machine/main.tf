@@ -78,9 +78,12 @@ EOF
     command = "echo \"${aws_instance.dev_machine.public_ip}\" > ip_address.txt"
   }
 
-  provisioner "file" {
-    content = templatefile("${path.module}/connect.sh.tmpl", { identity = "${var.name}-identity.pem", public_ip = "${aws_instance.dev_machine.public_ip}"})
-    destination = "connect.sh"
+  provisioner "local-exec" {
+    command = "echo $TEMPLATE > connect.sh"
+
+    environment = {
+      TEMPLATE = templatefile("${path.module}/connect.sh.tmpl", { identity = "${var.name}-identity.pem", public_ip = "${aws_instance.dev_machine.public_ip}"})
+    }
   }
 
   tags = {
