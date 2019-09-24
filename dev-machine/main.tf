@@ -96,6 +96,7 @@ sudo apt -y update
 apt-cache policy docker-ce
 sudo apt -y install docker-ce
 sudo usermod -aG docker ubuntu
+curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.34.0/install.sh | sudo bash
 EOF
 
   provisioner "local-exec" {
