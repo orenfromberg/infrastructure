@@ -73,11 +73,6 @@ sudo usermod -aG docker ubuntu
 curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.34.0/install.sh | sudo bash
 EOF
 
-
-  provisioner "local-exec" {
-    command = "echo \"${aws_instance.dev_machine.public_ip}\" > ip_address.txt"
-  }
-
   provisioner "local-exec" {
     command = "echo \"${templatefile("${path.module}/connect.sh.tmpl", { identity = "${var.name}-identity.pem", public_ip = "${aws_instance.dev_machine.public_ip}"})}\" > connect-to-${var.name}.sh; chmod +x connect-to-${var.name}.sh"
   }
