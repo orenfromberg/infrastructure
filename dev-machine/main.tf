@@ -79,7 +79,7 @@ EOF
   }
 
   provisioner "local-exec" {
-    command = "echo ${templatefile("${path.module}/connect.sh.tmpl", { identity = "${var.name}-identity.pem", public_ip = "${aws_instance.dev_machine.public_ip}"})} > connect.sh"
+    command = "echo \"${templatefile("${path.module}/connect.sh.tmpl", { identity = "${var.name}-identity.pem", public_ip = "${aws_instance.dev_machine.public_ip}"})}\" > connect.sh"
   }
 
   tags = {
