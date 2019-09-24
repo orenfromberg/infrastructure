@@ -8,7 +8,7 @@ To use it, get your ip address and add the following terraform:
 
 ```terraform
 module "my-instance" {
-  source = "git@github.com:orenfromberg/infrastructure.git//dev-machine?ref=tags/v0.0.1"
+  source = "git@github.com:orenfromberg/infrastructure.git//dev-machine?ref=tags/v0.0.5"
   my-ip = "71.104.71.56"
   name  = "my-dev-machine"
 }
@@ -21,9 +21,9 @@ $ terraform init
 $ terraform apply
 ```
 
-Once the command is complete, you'll have an identity file `identity.pem` and `ip_address.txt` created in your local directory.
+Once the command is complete, you'll have an identity file `my-dev-machine-identity.pem` and a script called `connect-to-my-dev-machine.sh` created in your local directory.
 
 Now ssh to the instance using the following command:
 ```sh
-$ ssh -i identity.pem ubuntu@$(cat ip_address.txt)
+$ ./connect-to-my-dev-machine.sh
 ```
