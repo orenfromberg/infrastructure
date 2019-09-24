@@ -82,18 +82,18 @@ resource "aws_instance" "dev-machine" {
   key_name = aws_key_pair.dev_machine.key_name
   associate_public_ip_address = true
   security_groups = [aws_security_group.security_grp.name]
-#   user_data = <<EOF
-# #!/bin/bash
-# sudo apt -y update && sudo apt -y upgrade
-# sudo apt -y install apt-transport-https ca-certificates curl software-properties-common
-# curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo apt-key add -
-# sudo add-apt-repository "deb [arch=amd64] https://download.docker.com/linux/ubuntu bionic stable"
-# sudo apt -y update
-# apt-cache policy docker-ce
-# sudo apt -y install docker-ce
-# sudo usermod -aG docker ubuntu
-# curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.34.0/install.sh | sudo bash
-# EOF
+  user_data = <<EOF
+#!/bin/bash
+sudo apt -y update && sudo apt -y upgrade
+sudo apt -y install apt-transport-https ca-certificates curl software-properties-common
+curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo apt-key add -
+sudo add-apt-repository "deb [arch=amd64] https://download.docker.com/linux/ubuntu bionic stable"
+sudo apt -y update
+apt-cache policy docker-ce
+sudo apt -y install docker-ce
+sudo usermod -aG docker ubuntu
+curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.34.0/install.sh | sudo bash
+EOF
 
 
   provisioner "local-exec" {
