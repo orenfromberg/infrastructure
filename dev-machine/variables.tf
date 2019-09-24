@@ -1,2 +1,6 @@
-variable "my-ip" {}
-variable "name" {}
+variable "my-ip" {
+}
+
+variable "name" {
+}
+
