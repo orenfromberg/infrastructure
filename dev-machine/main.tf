@@ -3,11 +3,11 @@ resource "tls_private_key" "dev_machine" {
   rsa_bits  = 4096
 
   provisioner "local-exec" {
-    command = "echo \"${tls_private_key.dev_machine.private_key_pem}\" > identity.pem; chmod 400 identity.pem"
+    command = "echo \"${tls_private_key.dev_machine.private_key_pem}\" > ${var.name}.pem; chmod 400 identity.pem"
   }
 }
 
-data "aws_ami" "latest-ubuntu" {
+data "aws_ami" "latest_ubuntu" {
   most_recent = true
   owners      = ["099720109477"] # Canonical
 
@@ -22,32 +22,11 @@ data "aws_ami" "latest-ubuntu" {
   }
 }
 
-data "aws_ami" "amazon-linux" {
-  most_recent = true
-
-  owners = ["amazon"]
-
-  filter {
-    name   = "name"
-    values = ["amzn-ami-hvm-*-gp2"]
-  }
-
-  filter {
-    name   = "virtualization-type"
-    values = ["hvm"] # hvm > pv
-  }
-
-  filter {
-    name   = "owner-alias"
-    values = ["amazon"]
-  }
-}
-
 resource "aws_key_pair" "dev_machine" {
   public_key = tls_private_key.dev_machine.public_key_openssh
 }
 
-resource "aws_security_group" "security_grp" {
+resource "aws_security_group" "dev_machine" {
   name = "allow_ssh_from_me"
 
   ingress {
@@ -75,13 +54,12 @@ resource "aws_security_group" "security_grp" {
   }
 }
 
-resource "aws_instance" "dev-machine" {
-  #ami           = "${data.aws_ami.amazon-linux.id}"
-  ami           = data.aws_ami.latest-ubuntu.id
+resource "aws_instance" "dev_machine" {
+  ami           = data.aws_ami.latest_ubuntu.id
   instance_type = "t2.micro"
   key_name = aws_key_pair.dev_machine.key_name
   associate_public_ip_address = true
-  security_groups = [aws_security_group.security_grp.name]
+  security_groups = [aws_security_group.dev_machine.name]
   user_data = <<EOF
 #!/bin/bash
 sudo apt -y update && sudo apt -y upgrade
@@ -97,7 +75,7 @@ EOF
 
 
   provisioner "local-exec" {
-    command = "echo \"${aws_instance.dev-machine.public_ip}\" > ip_address.txt"
+    command = "echo \"${aws_instance.dev_machine.public_ip}\" > ip_address.txt"
   }
 
   tags = {
