@@ -27,8 +27,6 @@ resource "aws_key_pair" "dev_machine" {
 }
 
 resource "aws_security_group" "dev_machine" {
-  name = "allow_ssh_from_me"
-
   ingress {
     from_port   = 22
     to_port     = 22
@@ -55,12 +53,12 @@ resource "aws_security_group" "dev_machine" {
 }
 
 resource "aws_instance" "dev_machine" {
-  ami           = data.aws_ami.latest_ubuntu.id
-  instance_type = "t2.micro"
-  key_name = aws_key_pair.dev_machine.key_name
+  ami                         = data.aws_ami.latest_ubuntu.id
+  instance_type               = "t2.micro"
+  key_name                    = aws_key_pair.dev_machine.key_name
   associate_public_ip_address = true
-  security_groups = [aws_security_group.dev_machine.name]
-  user_data = <<EOF
+  security_groups             = [aws_security_group.dev_machine.name]
+  user_data                   = <<EOF
 #!/bin/bash
 sudo apt -y update && sudo apt -y upgrade
 sudo apt -y install apt-transport-https ca-certificates curl software-properties-common
@@ -74,7 +72,7 @@ curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.34.0/install.sh | sudo 
 EOF
 
   provisioner "local-exec" {
-    command = "echo \"${templatefile("${path.module}/connect.sh.tmpl", { identity = "${var.name}-identity.pem", public_ip = "${aws_instance.dev_machine.public_ip}"})}\" > connect-to-${var.name}.sh; chmod +x connect-to-${var.name}.sh"
+    command = "echo \"${templatefile("${path.module}/connect.sh.tmpl", { identity = "${var.name}-identity.pem", public_ip = "${aws_instance.dev_machine.public_ip}" })}\" > connect-to-${var.name}.sh; chmod +x connect-to-${var.name}.sh"
   }
 
   tags = {
