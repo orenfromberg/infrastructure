@@ -1,11 +1,14 @@
 resource "tls_private_key" "dev_machine" {
   algorithm = "RSA"
   rsa_bits  = 4096
-
-  provisioner "local-exec" {
-    command = "echo \"${tls_private_key.dev_machine.private_key_pem}\" > ${var.name}-identity.pem; chmod 400 ${var.name}-identity.pem"
-  }
 }
+
+resource "local_file" "identity" {
+  content         = tls_private_key.dev_machine.private_key_pem
+  filename        = "${var.name}-identity.pem"
+  file_permission = "0400"
+}
+
 
 data "aws_ami" "latest_ubuntu" {
   most_recent = true
